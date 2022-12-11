@@ -9,7 +9,7 @@ router.get('/movies', function (req, res) {
 
 router.get('/movies/:indexNumber', function (req, res){
     let requestParams = req.params
-    console.log("This is the request "+ JSON.stringify(requestParams))
+    // console.log("This is the request "+ JSON.stringify(requestParams))
     let index = requestParams.indexNumber
     if(index>=movies.length){
         res.send('Please use valid index')
@@ -25,13 +25,14 @@ router.get('/films', function(req, res){
 router.get('/films/:filmId', function( req, res){
     let requestParams= req.params
     let id=requestParams.filmId
-    if(films.length<id){
+    let problem5 = problem4.films
+    if(problem5.length<id){
         res.send('No movie exists with this id')
     }
     else{
-        for(let i=0; i<films.length ; i++){
-            if(films[i].id==id){
-            res.send(films[i])
+        for(let i=0; i<problem5.length ; i++){
+            if(problem5[i].id==id){
+            res.send(problem5[i])
 }}}})
 
 module.exports = router;
