@@ -1,29 +1,46 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/sol1', function(req, res){
-    const arr= [1,2,3,5,6,7]
-    let n= arr[arr.length-1]
-    let totalSum= n*(n+1)/2
-    let arrSum=0
-    for(let i=0; i<arr.length; i++){
-        arrSum+=arr[i]
+let players =
+   [
+       {
+           "name": "manish",
+           "dob": "1/1/1995",
+           "gender": "male",
+           "city": "jalandhar",
+           "sports": [
+               "swimming"
+           ]
+       },
+       {
+           "name": "gopal",
+           "dob": "1/09/1995",
+           "gender": "male",
+           "city": "delhi",
+           "sports": [
+               "soccer"
+           ]
+       },
+       {
+           "name": "lokesh",
+           "dob": "1/1/1990",
+           "gender": "male",
+           "city": "mumbai",
+           "sports": [
+               "soccer"
+           ]
+       }
+   ]
+router.post('/players', function(req, res){
+    let obj= req.body
+    for(let i=0; i<players.length; i++){
+         if(players[i].name=== obj.name){
+           res.send('Name is already exist')
+        }
     }
-    const missingNumber=totalSum-arrSum
-    res.send({data:missingNumber})
-});
-
-router.get('/sol2', function(req,res){
-    const arr= [33, 34, 35, 37, 38]
-    let n= arr.length+1
-    let totalSum= n*(arr[0]+arr[arr.length-1])/2
-    let arrSum= 0
-    for(let i=0; i<arr.length; i++){
-        arrSum += arr[i]
-    }
-    const missingNumber= totalSum- arrSum
-    res.send({data: missingNumber})
-});
+    players.push(obj)
+    res.send({data: players, status:true})
+})
 
 
 module.exports = router;
