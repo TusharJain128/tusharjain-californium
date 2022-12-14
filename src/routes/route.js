@@ -32,8 +32,11 @@ let persons= [
  router.post('/person', function(req,res){
     let voteAge= req.query.votingAge
     for(let i=0; i<persons.length; i++){
-        if(persons[i].age>=voteAge){
+        if(voteAge<=persons[i].age){
             persons[i].votingStatus= true
+        }
+        else{
+            continue;
         }
     }
     let result= persons.filter(ele=> ele.votingStatus)
