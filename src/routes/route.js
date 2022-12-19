@@ -1,11 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const UserController= require('../controllers/userController')
-const UserModel= require("../models/userModel.js")
+const userController= require('../controllers/userController')
 
-router.post("/createData", UserController.createData  )
+router.post('/createBook', userController.createBook)
 
-router.get("/getBooksData", UserController.getBooksData)
+router.get('/bookList', userController.bookList)
 
+router.post('/getBooksInYear',userController.booksINYear)
+
+router.post('/getParticularBooks', userController.particularBooks)
+
+router.get('/getXINRBooks', userController.priceTag)
+
+router.get('/getRandomBooks', userController.randomBooks)
 
 module.exports = router;
