@@ -1,42 +1,43 @@
-const bookSchema= require('../models/userModel')
+const bookSchema= require('../models/bookModel')
+const authorSchema= require('../models/authorModel')
 
-const createBook= async function(req,res){
-    let data=req.body
-    let newbookdata= await bookSchema.create(data)
-    res.send({msg: newbookdata})
+
+const createAuthorDetails= async function(req, res){
+    let newData= req.body
+    let createData= await authorSchema.create(newData)
+    res.send({msg: createData})
+}
+const createBookDetails= async function(req, res){
+    let newData= req.body
+    let createData= await bookSchema.create(newData)
+    res.send({msg: createData})
 }
 
-const bookList= async function(req,res){
-    let totalbookdata= await bookSchema.find()
-    res.send({msg: totalbookdata})
+const chetanBhagatBooks= async function(req, res){
+    let authorData= await authorSchema.findOne({author_name: "Chetan Bhagat"})
+    let books= await bookSchema.find({author_id:authorData.author_id})
+    res.send({msg: books})
 }
 
-const booksINYear= async function(req, res){
-    let dataYear=req.query.year
-    let bookDataYear= await bookSchema.find({ year: dataYear})
-    res.send({msg: bookDataYear})
+const updateBookPrice= async function(req,res){
+    let data= await bookSchema.findOneAndUpdate(
+        {name: "Two states"},
+        {price: 100}
+    )
+    let details= await authorSchema.find({author_id: data.author_id}).select({author_name:1,_id: 0})
+    details.push({price: data.price})
+    res.send({msg: details})
 }
 
-const particularBooks= async function(req, res){
-    let getBook= req.body
-    let latestBook= await bookSchema.find(getBook)
-    res.send({msg: latestBook})
+const selectedBooks= async function(req, res){
+    let data= await bookSchema.find( { price : { $gte: 50, $lte: 100} } )
+    let authorId= data.map(book=> book.author_id)
+    let authorName= await authorSchema.find({author_id: {$in:authorId}}).select({author_name:1, _id:0})
+    res.send({msg: authorName})
 }
 
-const priceTag= async function(req,res){
-    
-    let priceSelectedBooks= await bookSchema.find({indianPrice: {$or: ["100","200","500"]}})
-    res.send({msg: priceSelectedBooks})
-}
-
-const randomBooks= async function(req,res){
-    let largePageBooks= await bookSchema.find({pages: {$gt: "500"}})
-    res.send({msg: largePageBooks})
-}
-
-module.exports.createBook= createBook
-module.exports.bookList= bookList
-module.exports.booksINYear= booksINYear
-module.exports.priceTag= priceTag
-module.exports.particularBooks= particularBooks
-module.exports.randomBooks= randomBooks
+module.exports.createAuthorDetails= createAuthorDetails
+module.exports.createBookDetails= createBookDetails
+module.exports.chetanBhagatBooks= chetanBhagatBooks
+module.exports.updateBookPrice= updateBookPrice
+module.exports.selectedBooks= selectedBooks
