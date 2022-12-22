@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const userController= require('../controllers/userController')
 
-router.post('/createAuthorDetails', userController.createAuthorDetails)
-router.post('/createBookDetails', userController.createBookDetails)
+router.get('/customerList',userController.customerList)
+router.delete('/customerDelete',userController.customerDelete)
+router.post('/newCustomer',userController.newCustomer)
 
-router.get('/chetanBhagat',userController.chetanBhagatBooks)
-router.get('/updatePrice',userController.updateBookPrice)
-router.get('/selectedBooks',userController.selectedBooks)
-
+router.get('/cardList',userController.cardList)
+router.post('/newCard', userController.newCard)
 module.exports = router;

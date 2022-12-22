@@ -1,43 +1,44 @@
-const bookSchema= require('../models/bookModel')
-const authorSchema= require('../models/authorModel')
+const cardModel= require('../models/cardModel')
+const customerModel= require('../models/customerModel')
 
-
-const createAuthorDetails= async function(req, res){
-    let newData= req.body
-    let createData= await authorSchema.create(newData)
-    res.send({msg: createData})
-}
-const createBookDetails= async function(req, res){
-    let newData= req.body
-    let createData= await bookSchema.create(newData)
-    res.send({msg: createData})
+const customerList= async function(req,res){
+    let list=await customerModel.find({status: 'ACTIVE'})
+    res.send({msg: list})
 }
 
-const chetanBhagatBooks= async function(req, res){
-    let authorData= await authorSchema.findOne({author_name: "Chetan Bhagat"})
-    let books= await bookSchema.find({author_id:authorData.author_id})
-    res.send({msg: books})
-}
-
-const updateBookPrice= async function(req,res){
-    let data= await bookSchema.findOneAndUpdate(
-        {name: "Two states"},
-        {price: 100}
+const customerDelete=async function(req,res){
+    let data= req.body
+    let deleted=await customerModel.findOneAndUpdate(
+        data,
+        {isDeleted: true, status: "INACTIVE"}
     )
-    let details= await authorSchema.find({author_id: data.author_id}).select({author_name:1,_id: 0})
-    details.push({price: data.price})
-    res.send({msg: details})
+    res.send({msg: deleted})
 }
 
-const selectedBooks= async function(req, res){
-    let data= await bookSchema.find( { price : { $gte: 50, $lte: 100} } )
-    let authorId= data.map(book=> book.author_id)
-    let authorName= await authorSchema.find({author_id: {$in:authorId}}).select({author_name:1, _id:0})
-    res.send({msg: authorName})
+const newCustomer=async function(req,res){
+    let data= req.body
+    let create= await customerModel.create(data)
+    res.send({msg: create})
 }
 
-module.exports.createAuthorDetails= createAuthorDetails
-module.exports.createBookDetails= createBookDetails
-module.exports.chetanBhagatBooks= chetanBhagatBooks
-module.exports.updateBookPrice= updateBookPrice
-module.exports.selectedBooks= selectedBooks
+const cardList= async function(req, res){
+    let list= await cardModel.find()
+    res.send({msg: list})
+}
+
+const newCard= async function(req,res){
+    let data= req.body
+    let addCustomerId= await customerModel.findOne({firstName: data.customerName}).select({customerID:1,_id:0})
+    let addCardNumber= await cardModel.find().count()+1
+    data.customerID = addCustomerId
+    data.cardNumber = "C"+addCardNumber
+    let createCard= await cardModel.create(data)
+    res.send({msg: createCard})
+}
+
+module.exports.customerList=customerList
+module.exports.customerDelete= customerDelete
+module.exports.newCustomer= newCustomer
+
+module.exports.cardList= cardList
+module.exports.newCard= newCard
