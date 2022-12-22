@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const userController= require('../controllers/userController')
 
-router.get('/customerList',userController.customerList)
-router.delete('/customerDelete',userController.customerDelete)
-router.post('/newCustomer',userController.newCustomer)
+const authorController= require("../controllers/authorController")
 
-router.get('/cardList',userController.cardList)
-router.post('/newCard', userController.newCard)
+router.post('/createAuthor',authorController.createAuthor)
+router.post('/createPublisher',authorController.createPublisher)
+router.post('/createBook',authorController.createBook)
+router.get('/getBooks',authorController.getBooks)
+
+router.put('/updatePublish',authorController.updatePublish)
+router.put('/updatePrice',authorController.updatePrice)
+
 module.exports = router;
