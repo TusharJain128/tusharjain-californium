@@ -1,14 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const controller= require('../controllers/controller') 
 
-const authorController= require("../controllers/authorController")
+router.get("/oneApi",controller.firstApi)
+router.get("/secondApi",controller.secondApi)
 
-router.post('/createAuthor',authorController.createAuthor)
-router.post('/createPublisher',authorController.createPublisher)
-router.post('/createBook',authorController.createBook)
-router.get('/getBooks',authorController.getBooks)
 
-router.put('/updatePublish',authorController.updatePublish)
-router.put('/updatePrice',authorController.updatePrice)
 
 module.exports = router;
