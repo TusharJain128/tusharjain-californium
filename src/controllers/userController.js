@@ -1,60 +1,46 @@
 const { type } = require("express/lib/response")
-const UserModel= require("../models/userModel")
+const orderModel= require('../models/orderModel')
+const productModel= require('../models/productModel')
+const userModel= require('../models/userModel')
 
 
+const addProduct= async function(req, res){
+    let product= await productModel.create(req.body)
+    res.send({msg: product})
+}
 
+const addUser= async function (req, res) {
+    let data = req.body
+    let userDetails= await userModel.create(data)
+    res.send({msg: userDetails})
+}
 
-const basicCode= async function(req, res) {
-    
-    let contentTypeHeader = req.headers.content-type
-    console.log("The headers received in this request are: ", req.headers)
-    console.log("The content type header is: ", contentTypeHeader)
-
-
-    req.headers.month = "December"
-    req.batch = "Californium"
-
-    console.log("The headers modified from this request are: ", req.headers)
-    // let tokenDataInHeaders= req.headers.token
-    // console.log(tokenDataInHeaders)
-    res.header("year", "2022")
-    console.log( "HEADER DATA ABOVE")
-    console.log( "hey man, congrats you have reached the Handler")
-
-    console.log("The request object looks like this: ", req)
-    res.send({ msg: "This is coming from controller (handler)"})
-    
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const createUser= async function (req, res) {
+const orderPurchase= async function(req,res){
     let data= req.body
-    let savedData= await UserModel.create(data)
-    res.send({msg: savedData})
+    let userID= await userModel.findOne({_id: data.userId})
+    if(userID==null){
+        res.send({error: 'Please enter correct user id'})
+    }
+    let productID= await productModel.findOne({_id: data.productId})
+    if(productID==null){
+        res.send({error: 'Please enter correct product id'})
+    }
+    if(data.isFreeAppUser=== false){
+
+        let priceDeduct=await userModel.findOneAndUpdate(
+            {_id: data.userId},
+            {$inc: {balance: -(data.amount)}},
+            {new: true}
+        )
+        console.log(priceDeduct)
+    }
+    let purchaseData= await orderModel.create(data)
+    res.send({msg: purchaseData})
 }
 
-const getUsersData= async function (req, res) {
-    let allUsers= await UserModel.find()
-    res.send({msg: allUsers})
-}
 
-module.exports.createUser= createUser
-module.exports.getUsersData= getUsersData
-module.exports.basicCode= basicCode
+
+
+module.exports.addProduct= addProduct
+module.exports.addUser= addUser
+module.exports.orderPurchase= orderPurchase
