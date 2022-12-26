@@ -20,20 +20,20 @@ const createPublisher= async function(req,res){
 
 const createBook= async function(req,res){
     let data= req.body
+    let authorIdvalid= await authorSchema.findById(data.authorId)
+    if(!authorIdvalid){
+       return res.send({msg: 'Please Enter valid author id'})
+    }
+    let publisherIdvalid= await publisherSchema.findById(data.publisher)
+    if(!publisherIdvalid){
+        return res.send({msg: 'Please Enter valid publisher id'})
+    }
     let book= await bookSchema.create(data)
     res.send({msg: book})
 }
 
 const getBooks= async function(req,res){
-    let allBooks= await bookSchema.findOne().populate('authorId publisher')
-    let authorIdvalid= await authorSchema.findOne({_id: allBooks.authorId})
-    if(authorIdvalid === null){
-        res.send({msg: 'Please Enter valid author id'})
-    }
-    let publisherIdvalid= await publisherSchema.findOne({_id: allBooks.publisher})
-    if(publisherIdvalid === null){
-        res.send({msg: 'Please Enter valid publisher id'})
-    }
+    let allBooks= await bookSchema.find().populate('authorId publisher')
     res.send({msg: allBooks})
 }
 
