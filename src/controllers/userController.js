@@ -1,5 +1,6 @@
 const userSchema= require('../models/userModel')
 const jwt= require('jsonwebtoken')
+const { sensitiveHeaders } = require('http2')
 
 const registerUser= async function(req,res){
     let data= await userSchema.create(req.body)
@@ -15,12 +16,14 @@ const loginUser= async function(req,res){
 }   
 
 const getUserDetails= async function(req,res){
+    let id = req.params.userId
     let details= await userSchema.findById(id)
     res.send({status: true , data: details})
 }
 
 const updateUser= async function(req,res){
     let data= req.body
+    let id = req.params.userId
     let update= await userSchema.findByIdAndUpdate(
         id,
         {$set: data},
@@ -30,6 +33,7 @@ const updateUser= async function(req,res){
 }
 
 const deleteUser= async function(req,res){
+    let id = req.params.userId
     let update= await userSchema.findByIdAndUpdate(
         id,
         {$set: {isDeleted: true}},
