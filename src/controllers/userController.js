@@ -15,20 +15,12 @@ const loginUser= async function(req,res){
 }   
 
 const getUserDetails= async function(req,res){
-    let token= req.headers['x-auth-token']
-    let id= req.params.userId
-    let decodeToken= jwt.verify(token,'loginkey')
-    if(decodeToken._id != id) return res.send({status: false, error: 'You are not authorized'})
     let details= await userSchema.findById(id)
     res.send({status: true , data: details})
 }
 
 const updateUser= async function(req,res){
-    let token= req.headers['x-auth-token']
-    let id = req.params.userId
     let data= req.body
-    let decodeToken= jwt.verify(token, 'loginkey')
-    if(decodeToken._id != id) return res.send({status: false, error: 'You are not authorized'})
     let update= await userSchema.findByIdAndUpdate(
         id,
         {$set: data},
@@ -38,10 +30,6 @@ const updateUser= async function(req,res){
 }
 
 const deleteUser= async function(req,res){
-    let token= req.headers['x-auth-token']
-    let id = req.params.userId
-    let decodeToken= jwt.verify(token, 'loginkey')
-    if(decodeToken._id != id) return res.send({status: false, error: 'You are not authorized'})
     let update= await userSchema.findByIdAndUpdate(
         id,
         {$set: {isDeleted: true}},
