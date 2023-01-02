@@ -33,4 +33,4 @@ const blogModel = new mongoose.Schema({
     }
 }, { timestamp: true })
 
-module.exports = mongoose.model("blogModel",) 
+module.exports = mongoose.model("blogModel", blogModel) 
