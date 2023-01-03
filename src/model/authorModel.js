@@ -1,4 +1,4 @@
-const mongoose= ('mongoose')
+const mongoose= require('mongoose')
 
 const authorModel= new mongoose.Schema({
     fname: {
@@ -12,7 +12,7 @@ const authorModel= new mongoose.Schema({
     title: {
         type : String,
         required: true,
-        enum : [Mr, Mrs, Miss]
+        enum : ["Mr", "Mrs", "Miss"]
     },
     email: {
         type : String,
