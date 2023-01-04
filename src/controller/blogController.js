@@ -41,7 +41,7 @@ const getBlog = async function (req, res) {
       obj.authorId = authorId
     }
 
-    if (category) {
+    else if (category) {
       obj.category = category
     }
 
