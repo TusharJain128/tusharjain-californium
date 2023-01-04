@@ -8,9 +8,8 @@ const createblog = async function (req, res) {
 
     // for required fields
     if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Object can not be empty" });
-
     let authId = await authorModel.findById(Id);
-    if (!authId) { return res.status(404).send({ status: false, msg: "Author does not exist" }) }
+    if (!authId) { return res.status(400).send({ status: false, msg: "Author does not exist" }) }
 
 
     if (data.isPublished) {
@@ -55,7 +54,7 @@ const getBlog = async function (req, res) {
 
 
     let findData = await blogModel.find(obj)
-    if (!findData.length > 0) {
+    if (!findData.length>0) {
       return res.status(404).send({ msg: "no data found" })
     }
     return res.status(200).send({ msg: findData })
@@ -95,7 +94,6 @@ const updateBlog = async function (req, res) {
 let deletebyId = async function (req, res) {
   try {
     let blogsId = req.params.blogsId;
-    console.log(blogsId)
     if(!blogsId)return res.status(400).send({ status: false, msg: "please enter blogId " });
 
     let findBlogId = await blogModel.findOne({ _id: blogsId,isDeleted:false });
@@ -123,8 +121,8 @@ const deleteBlog = async function (req, res) {
     let data = req.query
     if (Object.keys(data).length == 0) return res.status(404).send({ status: false, Error: "data is required" })
 
-
-    let savedData = await blogModel.findOneAndUpdate(data, { isDeleted: true }, { new: true })
+    let date = new Date();
+    let savedData = await blogModel.findOneAndUpdate(data, { isDeleted: true, deletedAt: date }, { new: true })
     if (!savedData) return res.status(404).send({ status: false, Error: "No Blog Found" })
     res.status(200).send({ status: false, Msg: savedData })
 
