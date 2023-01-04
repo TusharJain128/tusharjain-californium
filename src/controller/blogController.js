@@ -66,7 +66,7 @@ const getBlog = async function (req, res) {
 
 const updateBlog = async function (req, res) {
   try {
-    let data = req.body
+    let data= req.body
     let id = req.params.blogId
     if (data.tags == null) {
       return res.status(400).send({ status: false, error: "tags key is mandatory" })
@@ -75,14 +75,21 @@ const updateBlog = async function (req, res) {
       return res.status(400).send({ status: false, error: "subcategory is mandatory" })
     }
     else {
-      let newData = { title: data.title, body: data.body }
+      let { title, body, tags, subcategory } = data
+      let obj = { isDeleted: false }
+      if(title){
+        obj.title = title
+      }
+      if(body){
+        obj.body = body
+      }
       let date = new Date();
-      data["publishedAt"] = date;
-      data.isPublished = true
-      console.log(data)
+      obj["publishedAt"] = date;
+      obj.isPublished = true
+      console.log(tags)
       let update = await blogModel.findOneAndUpdate(
         { _id: id, isDeleted: false },
-        { $set: newData, $push: { tags: data.tags }, $push: { subcategory: data.subcategory } },
+        { $set: obj, $push: { subcategory: subcategory, tags: tags } },
         { new: true }
       )
       res.status(200).send({ status: true, msg: update })
@@ -122,7 +129,7 @@ const deleteBlog = async function (req, res) {
   try {
     let data = req.query
     if (Object.keys(data).length == 0) return res.status(404).send({ status: false, Error: "data is required" })
-
+    data.isDeleted= false
     let date = new Date();
     let savedData = await blogModel.findOneAndUpdate(data, { isDeleted: true, deletedAt: date }, { new: true })
     if (!savedData) return res.status(404).send({ status: false, Error: "No Blog Found" })
