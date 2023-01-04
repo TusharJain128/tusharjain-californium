@@ -45,14 +45,16 @@ const getBlog = async function (req, res) {
       obj.category = category
     }
 
-    if (tags) {
+    else if (tags) {
       obj.tags = tags
     }
 
-    if (subcategory) {
+    else if (subcategory) {
       obj.subcategory = subcategory
     }
-
+    else{
+      return res.status(400).send({status: false, error: "Please enter valid query"})
+    }
 
     let findData = await blogModel.find(obj)
     if (!findData.length>0) {
