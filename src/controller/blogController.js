@@ -98,7 +98,7 @@ const updateBlog = async function (req, res) {
 
 let deletebyId = async function (req, res) {
   try {
-    let blogsId = req.params.blogsId;
+    let blogsId = req.params.blogId;
     if(!blogsId)return res.status(400).send({ status: false, msg: "please enter blogId " });
 
     let findBlogId = await blogModel.findOne({ _id: blogsId,isDeleted:false });
