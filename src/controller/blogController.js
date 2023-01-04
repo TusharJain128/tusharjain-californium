@@ -1,5 +1,6 @@
 const authorModel = require("../model/authorModel");
 const blogModel = require("../model/blogModel");
+const mongoose= require('mongoose')
 
 const createblog = async function (req, res) {
   try {
@@ -78,6 +79,7 @@ const updateBlog = async function (req, res) {
       let date = new Date();
       data["publishedAt"] = date;
       data.isPublished = true
+      console.log(data)
       let update = await blogModel.findOneAndUpdate(
         { _id: id, isDeleted: false },
         { $set: newData, $push: { tags: data.tags }, $push: { subcategory: data.subcategory } },
@@ -87,7 +89,7 @@ const updateBlog = async function (req, res) {
     }
   }
   catch (error) {
-    res.status(404).send({ status: false, error: error.massage })
+    res.status(404).send({ status: false, error: error.message })
   }
 }
 
