@@ -19,11 +19,11 @@ let authentication = async function (req, res, next) {
 let authorisationById = async function (req, res, next) {
     try {
      
-      let requestBlogId = req.params.blogId
-      if(!blogId)return res.status(400).send({ status: false, msg: "please enter blogId"});
+      let blogId = req.params.blogId
+      if(!blogId) return res.status(400).send({ status: false, msg: "please enter blogId"});
       let token = req.headers["x-api-key"];
-      if (!token)return res.status(400).send({status:false,error: "x-api-key header is required" });
-      const blogs= await blogModel.findOne({_id:requestBlogId, isDeleted:false})
+      if (!token) return res.status(400).send({status:false,error: "x-api-key header is required" });
+      const blogs= await blogModel.findOne({_id:blogId, isDeleted:false})
       if(blogs== null) return res.status(404).send({status: false, error: "blog is not found"})
       let authorid= blogs.authorId._id
       let decode= jwt.verify(token, "laptop");
