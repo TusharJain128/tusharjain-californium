@@ -1,6 +1,8 @@
 const authorModel = require("../model/authorModel");
 const blogModel = require("../model/blogModel");
 const mongoose= require('mongoose')
+let date = new Date();
+
 
 const createblog = async function (req, res) {
   try {
@@ -79,7 +81,6 @@ const updateBlog = async function (req, res) {
       if(body){
         obj.body = body
       }
-      let date = new Date();
       obj["publishedAt"] = date;
       obj.isPublished = true
       console.log(tags)
@@ -98,23 +99,14 @@ const updateBlog = async function (req, res) {
 
 let deletebyId = async function (req, res) {
   try {
-    let blogsId = req.params.blogId;
-    if(!blogsId)return res.status(400).send({ status: false, msg: "please enter blogId " });
-
-    let findBlogId = await blogModel.findOne({ _id: blogsId,isDeleted:false });
-    if (!findBlogId)return res.status(404).send({ status: false, msg: "Blog  not found" });
-
- 
-    // delete blog if it is not deleted
-    let date = new Date();
-   
-    let isDeleted = await blogModel.findOneAndUpdate(
-      { _id: blogsId, isDeleted: false },
+    let blogId = req.params.blogId;
+    let isDeleted = await blogModel.findByIdAndUpdate(
+      blogId,
       { $set: { isDeleted: true, deletedAt: date } },
       { new: true }
     );
-
-  res.status(200).send({status: true, msg: isDeleted})} 
+    res.status(200).send({status: true, msg: isDeleted})
+} 
   catch (error) {
     return res.status(500).send({ status: false, msg: error.message });
   }
@@ -124,15 +116,11 @@ let deletebyId = async function (req, res) {
 const deleteBlog = async function (req, res) {
   try {
     let data = req.query
-    if (Object.keys(data).length == 0) return res.status(404).send({ status: false, Error: "data is required" })
-    data.isDeleted= false
-    let date = new Date();
     let savedData = await blogModel.findOneAndUpdate(data, { isDeleted: true, deletedAt: date }, { new: true })
     if (!savedData) return res.status(404).send({ status: false, Error: "No Blog Found" })
     res.status(200).send({ status: false, Msg: savedData })
-
-
-  } catch (error) {
+  } 
+  catch (error) {
     res.status(404).send({ status: true, Error: error.message })
   }
 }

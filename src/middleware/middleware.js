@@ -22,10 +22,11 @@ let authorisationById = async function (req, res, next) {
     try {
      
       let requestBlogId = req.params.blogId
+      if(!blogId)return res.status(400).send({ status: false, msg: "please enter blogId"});
       let token = req.headers["x-api-key"];
       if (!token)return res.status(400).send({status:false,error: "x-api-key header is required" });
-      const blogs= await blogModel.findById(requestBlogId)
-      if(blogs== null) return res.status(400).send({status: false, error: "blogs not found"})
+      const blogs= await blogModel.findOne({_id:requestBlogId, isDeleted:false})
+      if(blogs== null) return res.status(404).send({status: false, error: "blog is not found"})
       let authorid= blogs.authorId._id
       let decode= jwt.verify(token, "laptop");
       if (!decode) return res.status(400).send({status:false, error: "invalid key" });
@@ -43,11 +44,12 @@ let authorisationById = async function (req, res, next) {
     try {
      
         let data = req.query
-        console.log(data);
         if (Object.keys(data).length == 0) return res.status(404).send({ status: false, Error: "data is required" })    
         let token = req.headers["x-api-key"];
         if (!token)return res.status(400).send({status:false,error: "x-api-key header is required" });
+        data.isDeleted= false
         const getBlog= await blogModel.findOne(data)
+        if(getBlog==null) return res.status(404).send({status:false, error: "Blog is not found"})
         let authorid= getBlog.authorId._id
         let decode= jwt.verify(token, "laptop");
         if (!decode) return res.status(400).send({status:false, error: "invalid key" });
@@ -59,8 +61,6 @@ let authorisationById = async function (req, res, next) {
     }
   };
   
-  
-
   
   module.exports.authentication = authentication
   module.exports.authorisationById = authorisationById;
