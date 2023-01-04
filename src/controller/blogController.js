@@ -30,6 +30,7 @@ const createblog = async function (req, res) {
 const getBlog = async function (req, res) {
   try {
     let data = req.query
+    let arr= Object.keys(data)
     let { authorId, tags, subcategory, category } = data
     let obj = { isDeleted: false, isPublished: true }
 
@@ -40,20 +41,14 @@ const getBlog = async function (req, res) {
       if (!checkAuthor) return res.status(404).send({ msg: "no author exist" })
       obj.authorId = authorId
     }
-
-    else if (category) {
+    if (category) {
       obj.category = category
     }
-
-    else if (tags) {
+    if (tags) {
       obj.tags = tags
     }
-
-    else if (subcategory) {
+    if (subcategory) {
       obj.subcategory = subcategory
-    }
-    else{
-      return res.status(400).send({status: false, error: "Please enter valid query"})
     }
 
     let findData = await blogModel.find(obj)
@@ -139,7 +134,7 @@ const deleteBlog = async function (req, res) {
 
 
   } catch (error) {
-    res.status(404).send({ status: false, Error: error.message })
+    res.status(404).send({ status: true, Error: error.message })
   }
 }
 
