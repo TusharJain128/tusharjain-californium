@@ -30,7 +30,6 @@ const createblog = async function (req, res) {
 const getBlog = async function (req, res) {
   try {
     let data = req.query
-    let arr= Object.keys(data)
     let { authorId, tags, subcategory, category } = data
     let obj = { isDeleted: false, isPublished: true }
 
