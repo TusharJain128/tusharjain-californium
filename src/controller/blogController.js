@@ -12,7 +12,7 @@ const createBlog = async function (req, res) {
     let id = data.authorId;
     let authId = await authorModel.findById(id);
     if (!authId) { return res.status(400).send({status: false, error: "Author does not exist"}) }
-    if(req.decode._id == id) return res.status(400).send({status:false, error:"You are not autherised"})
+    if(req.decode._id != id) return res.status(400).send({status:false, error:"You are not autherised"})
     if (data.isPublished) {
       data["publishedAt"] = date; }
 
@@ -63,13 +63,6 @@ const updateBlog = async function (req, res) {
     let data= req.body
     let { title,body, tags,subcategory, ...rest } = data
     let id = req.params.blogId
-    if (data.tags == null) {
-      return res.status(400).send({ status: false, error: "tags key is mandatory" })
-    }
-    else if (data.subcategory == null) {
-      return res.status(400).send({ status: false, error: "subcategory is mandatory" })
-    }
-    else {
       if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable title,body,tags,subcategory"})
       
       let obj = { }
@@ -88,7 +81,6 @@ const updateBlog = async function (req, res) {
       )
       res.status(201).send({ status: true, msg: update })
     }
-  }
   catch (error) {
     res.status(500).send({ status: false, error: error.message })
   }
