@@ -15,10 +15,9 @@ const createblog = async function (req, res) {
     if (!authId) { return res.status(400).send({status: false, error: "Author does not exist"}) }
     if (data.isPublished) {
       data["publishedAt"] = date; }
-    {
+
       let savedData = await blogModel.create(data);
       return res.status(201).send({ status: true, data: savedData });
-    }
   } 
   catch (error) {
     return res.status(500).send({ status: false, error: error.message });
