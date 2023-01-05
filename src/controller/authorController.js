@@ -6,14 +6,18 @@ const validator= require('../validator/validator')
 const createAuthor = async function(req, res){
     try {
         let data = req.body;
+        console.log(data);
         let email= req.body.email
+        if(!email)return res.status(400).send({status:false,Error:"email is required"})
         let isEmailValid= validator.isEmail(email)
         if(!isEmailValid) return res.status(400).send({status: false, error: "Please enter valid email"})
         let savedData = await authorModel.create(data);
+        
         res.status(201).send({ status: true, data: savedData });
     
       } catch (error) {
-        res.status(500).send({ error: error.message });
+        console.log(error);
+        res.status(500).send({ Error: error.message});
       }
 }
 
