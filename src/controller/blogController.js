@@ -7,25 +7,20 @@ let date = new Date();
 const createblog = async function (req, res) {
   try {
     let data = req.body;
-    let Id = data.authorId;
+    let id = data.authorId;
 
-    // for required fields
     if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Object can not be empty" });
-    let authId = await authorModel.findById(Id);
-    if (!authId) { return res.status(400).send({ status: false, msg: "Author does not exist" }) }
-
-
+    let authId = await authorModel.findById(id);
+    if (!authId) { return res.status(400).send({status: false, error: "Author does not exist"}) }
     if (data.isPublished) {
-      let date = new Date();
-      data["publishedAt"] = date;
-    }
-
+      data["publishedAt"] = date; }
     {
       let savedData = await blogModel.create(data);
       return res.status(201).send({ status: true, data: savedData });
     }
-  } catch (error) {
-    return res.status(500).send({ status: false, msg: error.message });
+  } 
+  catch (error) {
+    return res.status(500).send({ status: false, error: error.message });
   }
 };
 
