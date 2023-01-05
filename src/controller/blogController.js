@@ -32,7 +32,6 @@ const getBlog = async function (req, res) {
     let obj = { isDeleted: false, isPublished: true }
     if (authorId) {
       if (!mongoose.isValidObjectId(authorId)) return res.status(400).send({ status: false, error: 'Invalid Author ID' })
-
       let checkAuthor = await authorModel.findById(authorId)
       if (!checkAuthor) return res.status(404).send({status: false, error: "no author exist" })
       obj.authorId = authorId
