@@ -1,6 +1,7 @@
 const authorModel = require("../model/authorModel");
 const blogModel = require("../model/blogModel");
 const mongoose= require('mongoose')
+const validator= require('../validator/validator')
 let date = new Date();
 
 
@@ -27,9 +28,9 @@ const createblog = async function (req, res) {
 const getBlog = async function (req, res) {
   try {
     let data = req.query
-    let { authorId, tags, subcategory, category } = data
+    let { authorId, tags, subcategory, category, ...rest } = data
     let obj = { isDeleted: false, isPublished: true }
-
+    if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable authorId, tags, subcategory, category "})
     if (authorId) {
       if (!mongoose.isValidObjectId(authorId)) return res.status(404).send({ status: false, error: 'Invalid Author ID' })
 
@@ -60,6 +61,7 @@ const getBlog = async function (req, res) {
 const updateBlog = async function (req, res) {
   try {
     let data= req.body
+    let { title,body, tags,subcategory, ...rest } = data
     let id = req.params.blogId
     if (data.tags == null) {
       return res.status(400).send({ status: false, error: "tags key is mandatory" })
@@ -68,6 +70,7 @@ const updateBlog = async function (req, res) {
       return res.status(400).send({ status: false, error: "subcategory is mandatory" })
     }
     else {
+      if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable title,body,tags,subcategory"})
       let { title, body, tags, subcategory } = data
       let obj = { isDeleted: false }
       if(title){
@@ -78,7 +81,6 @@ const updateBlog = async function (req, res) {
       }
       obj["publishedAt"] = date;
       obj.isPublished = true
-      console.log(tags)
       let update = await blogModel.findOneAndUpdate(
         { _id: id, isDeleted: false },
         { $set: obj, $push: { subcategory: subcategory, tags: tags } },

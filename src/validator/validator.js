@@ -5,4 +5,9 @@ function isEmail(email) {
     return false;
 }
 
+const checkInput= (value) => {
+    return (Object.keys(value).length > 0)
+}
+
 module.exports.isEmail= isEmail
+module.exports.checkInput= checkInput
