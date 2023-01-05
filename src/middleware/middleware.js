@@ -7,8 +7,9 @@ let authentication = async function (req, res, next) {
       let token = req.headers["x-api-key"];
       if (!token)return res.status(400).send({status:false,error: "x-api-key header is required" });
   
-      let isKeyTrue = jwt.verify(token, "laptop");
-      if (!isKeyTrue) return res.status(400).send({status:false, error: "invalid key" });
+      let decode = jwt.verify(token, "laptop");
+      if (!decode) return res.status(400).send({status:false, error: "invalid key" });
+      req.decode= decode
       next();
     }
      catch (error) {
