@@ -27,10 +27,10 @@ const getBlog = async function (req, res) {
   try {
     let data = req.query
     let { authorId, tags, subcategory, category, ...rest } = data
-    let obj = { isDeleted: false, isPublished: true }
     if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable authorId, tags, subcategory, category "})
+    let obj = { isDeleted: false, isPublished: true }
     if (authorId) {
-      if (!mongoose.isValidObjectId(authorId)) return res.status(404).send({ status: false, error: 'Invalid Author ID' })
+      if (!mongoose.isValidObjectId(authorId)) return res.status(400).send({ status: false, error: 'Invalid Author ID' })
 
       let checkAuthor = await authorModel.findById(authorId)
       if (!checkAuthor) return res.status(404).send({status: false, error: "no author exist" })
@@ -47,7 +47,8 @@ const getBlog = async function (req, res) {
     }
 
     let findData = await blogModel.find(obj)
-    if (!findData.length>0) {
+    
+    if (findData.length==0) {
       return res.status(404).send({status:false, error: "no data found" })
     }
     return res.status(200).send({status:true, msg: findData })
@@ -69,8 +70,8 @@ const updateBlog = async function (req, res) {
     }
     else {
       if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable title,body,tags,subcategory"})
-      let { title, body, tags, subcategory } = data
-      let obj = { isDeleted: false }
+      
+      let obj = { }
       if(title){
         obj.title = title
       }
