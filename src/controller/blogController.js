@@ -5,12 +5,11 @@ const validator= require('../validator/validator')
 let date = new Date();
 
 
-const createblog = async function (req, res) {
+const createBlog = async function (req, res) {
   try {
     let data = req.body;
-    let id = data.authorId;
-
     if (Object.keys(data).length == 0) return res.status(400).send({ status: false, error: "Please enter details" });
+    let id = data.authorId;
     let authId = await authorModel.findById(id);
     if (!authId) { return res.status(400).send({status: false, error: "Author does not exist"}) }
     if (data.isPublished) {
@@ -93,7 +92,7 @@ const updateBlog = async function (req, res) {
   }
 }
 
-let deletebyId = async function (req, res) {
+let deleteById = async function (req, res) {
   try {
     let blogId = req.params.blogId;
     let isDeleted = await blogModel.findByIdAndUpdate(
@@ -123,7 +122,7 @@ const deleteBlog = async function (req, res) {
 
 
 module.exports.getBlog = getBlog
-module.exports.createblog = createblog
+module.exports.createBlog = createBlog
 module.exports.updateBlog = updateBlog
-module.exports.deletebyId = deletebyId
+module.exports.deleteById = deleteById
 module.exports.deleteBlog = deleteBlog
