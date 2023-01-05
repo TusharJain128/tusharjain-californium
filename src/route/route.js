@@ -16,6 +16,6 @@ router.put("/blogs/:blogId",middleware.authentication,middleware.authorisationBy
 
 router.delete("/blogs/:blogId",middleware.authentication,middleware.authorisationById,blogController.deleteById)
 
-router.delete("/blogs",middleware.authentication,middleware.authorisationToQuery, blogController.deleteBlog)
+router.delete("/blogs",middleware.authentication,middleware.authorisationToQuery, blogController.deleteByQuery)
 
 module.exports = router

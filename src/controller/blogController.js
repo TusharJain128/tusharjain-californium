@@ -96,12 +96,12 @@ const updateBlog = async function (req, res) {
 let deleteById = async function (req, res) {
   try {
     let blogId = req.params.blogId;
-    let isDeleted = await blogModel.findByIdAndUpdate(
+    let deleteBlog = await blogModel.findByIdAndUpdate(
       blogId,
       { $set: { isDeleted: true, deletedAt: date } },
       { new: true }
     );
-    res.status(200).send({status: true, msg: isDeleted})
+    res.status(200).send({status: true, msg: deleteBlog})
 } 
   catch (error) {
     return res.status(500).send({ status: false, error: error.message });
@@ -109,12 +109,12 @@ let deleteById = async function (req, res) {
 };
 
 
-const deleteBlog = async function (req, res) {
+const deleteByQuery = async function (req, res) {
   try {
     let data = req.query
-    let savedData = await blogModel.findOneAndUpdate(data, { isDeleted: true, deletedAt: date }, { new: true })
-    if (!savedData) return res.status(404).send({ status: false, error: "No Blog Found" })
-    res.status(200).send({ status: false, Msg: savedData })
+    let deleteBlog = await blogModel.findOneAndUpdate(data, { isDeleted: true, deletedAt: date }, { new: true })
+  
+    res.status(200).send({ status: false, msg: deleteBlog })
   } 
   catch (error) {
     res.status(500).send({ status: true, error: error.message })
@@ -126,4 +126,4 @@ module.exports.getBlog = getBlog
 module.exports.createBlog = createBlog
 module.exports.updateBlog = updateBlog
 module.exports.deleteById = deleteById
-module.exports.deleteBlog = deleteBlog
+module.exports.deleteByQuery = deleteByQuery
