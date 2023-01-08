@@ -9,6 +9,7 @@ const createBlog = async function (req, res) {
   try {
     let data = req.body;
     if (Object.keys(data).length == 0) return res.status(400).send({ status: false, error: "Please enter details" });
+    let {title,body,authorId,tags,category,subcategory,isDeleted,isPublished}=data
     let id = data.authorId;
     let authId = await authorModel.findById(id);
     if (!authId) { return res.status(400).send({status: false, error: "Author does not exist"}) }

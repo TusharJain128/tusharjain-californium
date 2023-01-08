@@ -1,7 +1,8 @@
 const authorModel = require("../model/authorModel")
 const jwt= require('jsonwebtoken')
-const validator= require('../validator/validator')
 
+
+let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
 let nameRegex = /^[a-zA-Z]{1,20}$/
 let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 
@@ -9,11 +10,11 @@ let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 const createAuthor = async function(req, res){
     try {
         let data = req.body;
+        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, error: "Please enter details" });
         let {fname,lname,title,email,password}=data
-        
-        if(!email)return res.status(400).send({status:false,error:"email is required"})
-        let isEmailValid= validator.isEmail(email)
-        if(!isEmailValid) return res.status(400).send({status: false, error: "Please enter valid email"})
+        if(!email || email=="")return res.status(400).send({status:false,error:"email is required"})
+        email=data.email=email.trim()
+        if(!emailRegex.test(email))return res.status(400).send({status:false, error:"provide valid email"})
         let duplicateEmail= await authorModel.findOne({email: email})
         if(duplicateEmail)return res.status(400).send({status:false,error:"email is already exist"})
         if(!fname ||fname=="")return res.status(400).send({status:false, error:"provide fname"})
@@ -43,6 +44,10 @@ const loginAuthor = async function(req,res){
   try{
     let data = req.body
     let {email,password} = data
+    if(!email ||email == "")return res.Status(400).send({status:false, error:"proide  email "})
+    email= data.email=email.trim()
+    if(!password ||password=="")return res.status(400).send({status:false, error:"provide password"})
+    password=data.password=password.trim()
 
     let savedData = await authorModel.findOne({email:email,password:password})
     if(!savedData) return res.status(400).send({status:false, error: "details not match"})
