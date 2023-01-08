@@ -1,15 +1,19 @@
 const authorModel = require("../model/authorModel");
 const blogModel = require("../model/blogModel");
 const mongoose= require('mongoose')
-const validator= require('../validator/validator')
 let date = new Date();
+
+
+const checkInput= (value) => {
+  return (Object.keys(value).length > 0)
+}
+
 
 
 const createBlog = async function (req, res) {
   try {
     let data = req.body;
     if (Object.keys(data).length == 0) return res.status(400).send({ status: false, error: "Please enter details" });
-    let {title,body,authorId,tags,category,subcategory,isDeleted,isPublished}=data
     let id = data.authorId;
     let authId = await authorModel.findById(id);
     if (!authId) { return res.status(400).send({status: false, error: "Author does not exist"}) }
@@ -29,7 +33,7 @@ const getBlog = async function (req, res) {
   try {
     let data = req.query
     let { authorId, tags, subcategory, category, ...rest } = data
-    if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable authorId, tags, subcategory, category "})
+    if(checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable authorId, tags, subcategory, category "})
     let obj = { isDeleted: false, isPublished: true }
     if (authorId) {
       if (!mongoose.isValidObjectId(authorId)) return res.status(400).send({ status: false, error: 'Invalid Author ID' })
@@ -63,7 +67,7 @@ const updateBlog = async function (req, res) {
     let data= req.body
     let { title,body, tags,subcategory, ...rest } = data
     let id = req.params.blogId
-      if(validator.checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable title,body,tags,subcategory"})
+      if(checkInput(rest)) return res.status(400).send({status: false, error:"Only acceptable title,body,tags,subcategory"})
       
       let obj = { }
       if(title){
